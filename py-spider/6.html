@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<div class="x-wiki-content x-main-content"><p>我们已经成功地添加并提交了一个readme.txt文件，现在，是时候继续工作了，于是，我们继续修改readme.txt文件，改成如下内容：</p><center><h1>时光机穿梭</h1></center>
+<pre><code>Git is a distributed version control system.
+Git is free software.
+</code></pre><p>现在，运行<code>git status</code>命令看看结果：</p>
+<pre><code>$ git status
+On branch master
+Changes not staged for commit:
+  (use "git add &lt;file&gt;..." to update what will be committed)
+  (use "git checkout -- &lt;file&gt;..." to discard changes in working directory)
+
+    modified:   readme.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+</code></pre><p><code>git status</code>命令可以让我们时刻掌握仓库当前的状态，上面的命令输出告诉我们，<code>readme.txt</code>被修改过了，但还没有准备提交的修改。</p>
+<p>虽然Git告诉我们<code>readme.txt</code>被修改了，但如果能看看具体修改了什么内容，自然是很好的。比如你休假两周从国外回来，第一天上班时，已经记不清上次怎么修改的<code>readme.txt</code>，所以，需要用<code>git diff</code>这个命令看看：</p>
+<pre><code>$ git diff readme.txt 
+diff --git a/readme.txt b/readme.txt
+index 46d49bf..9247db6 100644
+--- a/readme.txt
++++ b/readme.txt
+@@ -1,2 +1,2 @@
+-Git is a version control system.
++Git is a distributed version control system.
+ Git is free software.
+</code></pre><p><code>git diff</code>顾名思义就是查看difference，显示的格式正是Unix通用的diff格式，可以从上面的命令输出看到，我们在第一行添加了一个<code>distributed</code>单词。</p>
+<p>知道了对<code>readme.txt</code>作了什么修改后，再把它提交到仓库就放心多了，提交修改和提交新文件是一样的两步，第一步是<code>git add</code>：</p>
+<pre><code>$ git add readme.txt
+</code></pre><p>同样没有任何输出。在执行第二步<code>git commit</code>之前，我们再运行<code>git status</code>看看当前仓库的状态：</p>
+<pre><code>$ git status
+On branch master
+Changes to be committed:
+  (use "git reset HEAD &lt;file&gt;..." to unstage)
+
+    modified:   readme.txt
+</code></pre><p><code>git status</code>告诉我们，将要被提交的修改包括<code>readme.txt</code>，下一步，就可以放心地提交了：</p>
+<pre><code>$ git commit -m "add distributed"
+[master e475afc] add distributed
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+</code></pre><p>提交后，我们再用<code>git status</code>命令看看仓库的当前状态：</p>
+<pre><code>$ git status
+On branch master
+nothing to commit, working tree clean
+</code></pre><p>Git告诉我们当前没有需要提交的修改，而且，工作目录是干净（working tree clean）的。</p>
+<video controls="" width="100%"><source src="http://liaoxuefeng.gitee.io/git-resources/3-git-status.mp4"/></video>
+<h3><a name="#-E5-B0-8F-E7-BB-93"></a>小结</h3>
+<ul>
+<li><p>要随时掌握工作区的状态，使用<code>git status</code>命令。</p>
+</li>
+<li><p>如果<code>git status</code>告诉你有文件被修改过，用<code>git diff</code>可以查看修改内容。</p>
+</li>
+</ul>
+</div>
+</body>
+</html>
