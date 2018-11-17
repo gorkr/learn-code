@@ -1,0 +1,52 @@
+1、编写一个程序，其中设计一个时间类Time，用来保存时、分、秒等私有
+数据成员，通过重载操作符“+”实现两个时间的相加。要求将小时范围限制在
+大于等于0，分钟范围限制在0~59 分，秒钟范围限制在0~59 秒。
+提示：时间类Time 的参考框架如下：
+class Time
+{
+public:
+Time(int h=0,int m=0,int s=0);//构造函数
+Time operator+(Time &);//运算符重载函数，实现两个时间的相加
+Time operator+();//运算符重载函数，实现两个时间的相加
+void disptime();//显示时间函数
+private:
+int hours,minutes,seconds;
+};
+
+2、写一个程序，定义抽象类Container：
+class Container
+{
+protected:
+double radius;
+public:
+Container(double r);//抽象类Container 的构造函数
+virtual double surface_area()=0;//纯虚函数surface_area
+virtual double volume()=0;//纯虚函数volume
+};
+【要求】
+建立3 个继承Container 的派生类：Sphere（球体）、Cylinder（圆柱体）、Cube
+（正方体），让每一个派生类都包含虚函数surface_area()和volume()，分别用来
+球体、圆柱体和正方体的表面积和体积。要求写出主程序，应用C++的多态性，
+分别计算边长为6.0 的正方体、半径为5.0 的球体，以及半径为5.0 和高为6.0
+的圆柱体的表面积和体积。
+
+3、设计一个点类Point，其结构如下：
+（1）Point 类表示二维平面点的集合，数据成员由点的坐标值表示，类型为int；
+（2）三个重载构造函数：
+a) 一个是无参数的构造函数；
+b) 一个是带坐标值参数的构造函数，实现对数据成员的初始化；
+c) 一个是copy 构造函数，实现用一个对象初始化本对象；
+（3）两个重载成员函数：
+a) void offert(int , int )；实现点的偏移，参数是偏移量；
+b) void offert(Point &)；实现点的偏移，参数Point 类对象是偏移量；
+（4）6 个运算符重载函数：
+a) bool operator = = (Point &)；判断两个点对象是否相等；
+b) void operator + =(Point &)；将两个点对象相加；PP
+c) void operator ++()；将当前对象自增1（前缀）；
+d) void operator ++(int )；将当前对象自增1（后缀）；
+e) friend Point& operator + (Point &, Point &)；将两个点对象相加；
+f) friend Point &operator − (Point &, Point &)；将两个点对象相减；
+（5）两个成员函数提供实例对象对私有数据的访问：
+a) int GetX（）；
+b) int GetY（）；
+（6）公有成员函数void Display（）；输出对象的数据成员；
