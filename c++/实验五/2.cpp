@@ -23,10 +23,6 @@ T min(T arr[], int n){
 int main(){
   int arr_int[] = {1,2,3,4,3,1,6};
   double arr_dou[] = {1.23,4.3,2.4,6.5,6.6,0.3};
-
   cout<<"int \n"<<"max: "<<max(arr_int, 7)<<"; min: "<<min(arr_int, 7)<<endl;
   cout<<"double \n"<<"max: "<<max(arr_dou, 6)<<"; min: "<<min(arr_dou, 6)<<endl;
-
-
-
 }
