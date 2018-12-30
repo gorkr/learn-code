@@ -31,8 +31,11 @@ class BinaryGate(logicGate):
             return self.pinA.getFrom().getOutput()
 
     def getPinB(self):
-        return int(input("Enter Pin B input for gate" + self.getLable()+
+        if self.pinB == None:
+            return int(input("Enter Pin B input for gate" + self.getLable()+
                          "-->"))
+        else:
+            return self.pinB.getFrom().getOutput()
 
     def setNextPin(self, source):
         '''选择一条pin与source连接
@@ -40,13 +43,12 @@ class BinaryGate(logicGate):
         source -- a gate, the end of
         '''
         if self.pinA == None:
-            self.pinA == source
+            self.pinA = source
         else:
             if self.pinB == None:
-                self.pinB == source
+                self.pinB = source
             else:
-                raise: RuntimeError("Error: NO EMPTY PINS")
-
+                raise RuntimeError("Error: NO EMPTY PINS")
 
 
 class UnaryGate(logicGate):
@@ -58,8 +60,21 @@ class UnaryGate(logicGate):
         self.pin = None
 
     def getPin(self):
-        return int(input("Enter Pin input for gate" + self.getLable()+
+        if self.pin == None:
+            return int(input("Enter Pin input for gate" + self.getLable()+
                          "-->"))
+        else:
+            return self.pin.getFrom().getOutput()
+
+    def setNextPin(self, source):
+        '''选择一条pin与source连接
+
+        source -- a gate, the end of
+        '''
+        if self.pin == None:
+            self.pin = source
+        else:
+            raise RuntimeError("Error: NO EMPTY PINS")
 
 
 class AndGate(BinaryGate):
@@ -125,5 +140,11 @@ class Connector:
 
 
 if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+    g1 = AndGate("G1")
+    g2 = AndGate("G2")
+    g3 = OrGate("G3")
+    g4 = NoGate("G4")
+    c1 = Connector(g1, g3)
+    c2 = Connector(g2, g3)
+    c3 = Connector(g3, g4)
+    print(g4.getOutput())
