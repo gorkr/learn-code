@@ -26,13 +26,17 @@ def create_key(num, group = 4):
                           )  #a string for secret_key
             f.write(key+'\n')
 
-create_key(200)
+if __name__ == "__main__":
+    create_key(200)
 
 #string模块参考
 #https://docs.python.org/3/library/string.html
-
+#
 #random模块参考
 #https://www.cnblogs.com/dylancao/p/8079230.html
-
+#
 #使用命令执行python文件
 #https://www.cnblogs.com/HeDaoYiWenZi/articles/2855965.html
+#
+#linux 命令执行
+#$chmod u+x create_key.py
