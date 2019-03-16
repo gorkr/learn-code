@@ -76,7 +76,6 @@ void reverse_list2(LinkList * head){
   head->next = p1;
 }
 
-
 int main(){
   LinkList * list = init_list(3);
   //print_list(list);
