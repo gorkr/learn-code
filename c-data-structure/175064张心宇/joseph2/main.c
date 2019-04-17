@@ -1,3 +1,4 @@
+// joseph2
 // 顺序表实现joesh环
 #include<stdio.h>
 #include<stdlib.h>
@@ -104,24 +105,3 @@ int main(){
     game(num, init_sec);
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

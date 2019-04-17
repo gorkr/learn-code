@@ -349,10 +349,3 @@ int main(){
     parking();
     return 0;
 }
-
-
-struct a{
-    int a;
-;
-
-struct a b;

@@ -1,0 +1,3 @@
+/home/gorkr/Documents/learn-code/c-data-structure/ADT/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/gorkr/Documents/learn-code/c-data-structure/ADT/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/gorkr/Documents/learn-code/c-data-structure/ADT/cmake-build-debug/CMakeFiles/ADT.dir
