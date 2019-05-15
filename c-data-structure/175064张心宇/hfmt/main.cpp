@@ -4,43 +4,22 @@ using namespace std;
 
 
 class Node{
-    // 储存元素
+private:
     char ch;
-    int weigth;
-    Node *Left;
-    Node *Right;
+    int weight;
+    int parent, lchild, rchild;
 
-    Node(){
-        ch = NULL;  // 这样子占用的内存 和 ch = 'c'; 相同吗？
-        weigth = NULL;
-        Left = nullptr;
-        Right = nullptr;
-    }
-
-    Node(const Node &P){
-        ch = P.ch;
-        weigth = P.weigth;
-        if (P.Left == nullptr)
-            Left = nullptr;
-        else {
-            Left = new Node();
-            *Left = *(P.Left);
-        }
-        if (P.Right == nullptr)
-            Right = nullptr;
-        else {
-            Right = new Node();
-            *Right = *(P.Right);
-        }
-    }
+public:
+    // 0判定为空
+    explicit Node(char c=NULL, int w=NULL, int p=NULL, int l=NULL, int r=NULL)
+            :ch(c),weight(w),parent(p),lchild(l),rchild(r){}
 
     bool operator <= (const Node &P) {
-        return this->weigth <= P.weigth;
+        return this->weight <= P.weight;
     }
 
     ~Node() = default;
 };
-
 
 
 /* Huffman类:哈夫曼树
@@ -56,9 +35,23 @@ class Node{
  */
 class Huffman
 {
+private:
+    const int len;  // 权重数组长度
+    int *weights; // 权重数组
+    string *chars; // 编码表
+   // Node *Root; // 哈夫曼树根
+    Node *hf_tree;  // 节点数组
+
+    // 辅助功能函数
+    void MakeEmpty(Node *);
+    void BuildCode(Node *, string);
+    int GetRoot(){
+        return 2*len-1;
+    }
+
 public:
     // 构造函数
-    Huffman();
+    Huffman(const int l, int w[], string s[]);
     // 析构函数
     ~Huffman();
 
@@ -70,20 +63,12 @@ public:
     void GetFreq(int);
     void BuildTree();  // initalization
     void BuildCode();
+    void PrintTree();  // 使用ASCII在终端打印树
 
     std::string Expend(std::string);
     std::string Compress(std::string);
 
-private:
-    // 辅助功能函数
-    void MakeEmpty(Node *);
-    void BuildCode(Node *, string);
 
-    // 数据成员
-    int len;  // 数组长度
-    int *freq; // 权重数组
-    string *st; // 编码表
-    Node *Root; // 哈夫曼树根
 };
 
 
@@ -97,8 +82,8 @@ void Huffman::BuildTree() {
         if (freq[c] > 0) {
             Node *NewNode = new Node();
             NewNode->ch = c;
-            NewNode->Left = NewNode->Right = NULL;
-            NewNode->weigth = freq[c];
+            NewNode->left = NewNode->right = NULL;
+            NewNode->weight = freq[c];
             ph.Insert(*NewNode);
         }
 
@@ -113,9 +98,9 @@ void Huffman::BuildTree() {
 
         Node *Parent = new Node();
         Parent->ch = '\0';
-        Parent->Left = x;
-        Parent->Right = y;
-        Parent->weigth = x->weigth + y->weigth;
+        Parent->left = x;
+        Parent->right = y;
+        Parent->weight = x->weight + y->weight;
         ph.Insert(*Parent);
     }
 
@@ -126,18 +111,21 @@ void Huffman::BuildTree() {
 }
 */
 
-void Huffman::BuildTree() {
-
+Huffman::Huffman(const int l, int w[], string s[])
+        :len(l),weights(w),chars(s){
+    hf_tree = new Node [GetRoot()];
 }
 
+void Huffman::BuildTree(){
+   // Node *p = hf_tree;
+    for(int i=0;i<this->GetRoot();++i){
 
-Huffman::Huffman(){
-    cout<<"请输入字符集大小（任意整数，如5）:"<<endl;
-    cin>>len;
-    cout<<"以 字符，权值 方式输入数据,如( ,1 a,2 b,3 c,4 d,5)："<<endl;
-    freq = new int [len];
-    st = new string [len];
-    for(int i=0; i<len; i++){
-        scanf("%s,%d",&st[i], &freq[i]);getchar();
+
     }
+}
+
+int main(){
+    cout<<"请输入字符集大小（任意整数，如5）:"<<endl;
+    //cin>>len;
+    cout<<"以 字符，权值 方式输入数据,如( ,1 a,2 b,3 c,4 d,5)："<<endl;
 }
