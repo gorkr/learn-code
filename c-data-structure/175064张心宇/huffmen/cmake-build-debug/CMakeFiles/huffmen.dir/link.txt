@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/huffmen.dir/main.c.o  -o huffmen 

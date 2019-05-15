@@ -1,0 +1,19 @@
+#!/bin/bash
+#Shell name:create_50_users.sh
+#Program:
+#    create 50 users in a dirctory
+#History:
+#    2019/5/1 gorkr
+#
+#
+#Usage: source  create_50_users
+
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:.
+export PATH
+
+for i in `seq 50`
+do
+  useradd -G test test$i -d /storage/user/test/home/test$i >/dev/null 2>/dev/null
+  [ $? -eq 0 ] && echo -e "[\033[32mok\033[0m]user test$i create success."
+done
+exit 0
