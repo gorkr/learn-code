@@ -123,7 +123,6 @@ HuffmanTree initalization(){
         hf[i].lchild = min[0];
         hf[i].rchild = min[1];
         hf[i].weight = hf[min[0]].weight + hf[min[1]].weight;
-        flag0=flag1 = 0;
     }
     free(map);
     write_hfmtree(hf);

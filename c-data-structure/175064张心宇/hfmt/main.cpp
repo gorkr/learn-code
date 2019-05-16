@@ -3,19 +3,17 @@
 using namespace std;
 
 
-class Node{
-private:
+struct Node{
     char ch;
     int weight;
     int parent, lchild, rchild;
 
-public:
     // 0判定为空
     explicit Node(char c=NULL, int w=NULL, int p=NULL, int l=NULL, int r=NULL)
             :ch(c),weight(w),parent(p),lchild(l),rchild(r){}
 
-    bool operator <= (const Node &P) {
-        return this->weight <= P.weight;
+    bool operator < (const Node &P) {
+        return this->weight < P.weight;
     }
 
     ~Node() = default;
@@ -35,38 +33,42 @@ public:
  */
 class Huffman
 {
-private:
-    const int len;  // 权重数组长度
+//private:
+public:
+    int len;  // 权重数组长度
     int *weights; // 权重数组
-    string *chars; // 编码表
+    char *chars; // 编码表
    // Node *Root; // 哈夫曼树根
     Node *hf_tree;  // 节点数组
+    int root;
 
     // 辅助功能函数
-    void MakeEmpty(Node *);
-    void BuildCode(Node *, string);
-    int GetRoot(){
-        return 2*len-1;
+//    void MakeEmpty(Node *);
+//    void BuildCode(Node *, char);
+    /*
+    bool IsLeaf(int i){
+        return hf_tree[i].parent==0;
     }
+*/
 
 public:
     // 构造函数
-    Huffman(const int l, int w[], string s[]);
+    Huffman(int l, int w[], char s[]);
     // 析构函数
-    ~Huffman();
+ //   ~Huffman();
 
     // 接口函数
-    void MakeEmpty();
-    void DisSt();
+//    void MakeEmpty();
+//    void DisSt();
 
-    bool IsLeaf(Node*);
-    void GetFreq(int);
+//    bool IsLeaf(Node*);
+//    void GetFreq(int);
     void BuildTree();  // initalization
-    void BuildCode();
-    void PrintTree();  // 使用ASCII在终端打印树
+//    void BuildCode();
+//    void PrintTree();  // 使用ASCII在终端打印树
 
-    std::string Expend(std::string);
-    std::string Compress(std::string);
+//    std::char Expend(std::char);
+//    std::char Compress(std::char);
 
 
 };
@@ -111,21 +113,65 @@ void Huffman::BuildTree() {
 }
 */
 
-Huffman::Huffman(const int l, int w[], string s[])
+Huffman::Huffman(int l, int w[], char s[])
         :len(l),weights(w),chars(s){
-    hf_tree = new Node [GetRoot()];
+    hf_tree = new Node [root];  // 什么时候用this?
+    root = 2*len-1;
 }
 
 void Huffman::BuildTree(){
    // Node *p = hf_tree;
-    for(int i=0;i<this->GetRoot();++i){
+    // 初始化叶子节点
+    for(int i=0;i<len;++i){
+        hf_tree[i].ch = chars[i];
+        hf_tree[i].weight = weights[i];
+    }
 
+    // 构建树
+    for(int i=len;i<root;++i){
 
+        // 取得最小两权值的下标
+        int min[2] = {0,0};
+        int flag0=1, flag1=1;  // 最小值未被初始化
+        for(int j=0; j<i; j++){
+            if(hf_tree[j].parent==0){
+                if(bool(flag0)){
+                    min[0]=j;
+                    flag0--;
+                }else if(bool(flag1)){
+                    min[1]=j;
+                    flag1--;
+                    if(min[0]>min[1]){  // 保证min[0]一定小于min[1]
+                        int tmp = min[0]; min[0] = min[1]; min[1] = tmp;
+                    }
+                }else{
+                    if(hf_tree[j] < hf_tree[min[0]])min[0]=j;
+                    else if(hf_tree[j] < hf_tree[min[0]])min[1]=j;
+                }
+            }
+
+        }
+        // 根据最小下标 更新parent,lchild和rchild
+        hf_tree[min[0]].parent = hf_tree[min[1]].parent = i;
+        hf_tree[i].lchild = min[0]; hf_tree[i].rchild = min[1];
+        hf_tree[i].weight = hf_tree[min[0]].weight + hf_tree[min[1]].weight;
     }
 }
 
 int main(){
+    int len;
     cout<<"请输入字符集大小（任意整数，如5）:"<<endl;
-    //cin>>len;
+    cin>>len;getchar();
+    int weights[len];
+    char chars[len];
     cout<<"以 字符，权值 方式输入数据,如( ,1 a,2 b,3 c,4 d,5)："<<endl;
+    for(int i=0;i<len;i++){
+        scanf("%c,%d",&chars[i], &weights[i]);getchar();
+    }
+
+    Huffman hf(len, weights, chars);
+    hf.BuildTree();
+    for(int i=0;i<2*len-1;i++){
+        cout<<hf.hf_tree[i].weight<<"   "<<hf.hf_tree[i].parent<<"  "<<endl;
+    }
 }
