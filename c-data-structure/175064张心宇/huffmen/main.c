@@ -1,25 +1,6 @@
-/**
- 1）I：初始化（Initialization）。
- 从终端读入字符集大小n，以及n个字符和n个权值，建立哈夫曼树，并将它存于文件hfmTree中。
-（2）E：编码（Encoding）。
- 利用以建好的哈夫曼树（如不在内存，则从文件hfmTree中读入），对文件ToBeTran中的正文进行编码，然后将结果存入文件CodeFile中。
-（3）D：译码（Decoding）。
- 利用已经建好的哈夫曼树将文件CodeFile中的代码进行译码，结果存入文件TextFile中。
-（4）P：打印代码文件（Print）。
- 将文件CodeFile以紧凑格式显示在终端上，每行50个代码，同时将此字符形式的编码写入文件CodePrint中。
-（5）T：打印哈夫曼树（Tree printing）。
- 将已经在内存中的哈夫曼树以直观的方式（树或凹入表形式）显示在终端上，同时将此字符形式的哈夫曼树写入文件TreePrint中。
- */
-
-
-/**
- * 在huffman数组里 包含 叶子数，叶子对应的编码 这些属性
- * 但这样内存占用就更多了吧
- */
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-
 
 
 // 字符及其权值表
@@ -29,6 +10,9 @@ typedef struct{
 }CharNode,* CharMap;
 
 // huffman 数组
+//- 这里应该让HuffmanTree类型独立出来，
+//- 让HTNode数组成为 HuffmanTree类型的一个元素。
+//- 同时让 len 属性独立出来
 typedef struct{
     int len;  // 叶子数
     char c;
@@ -37,23 +21,16 @@ typedef struct{
     char * code;  // 叶子对应的编码
 }HTNode, * HuffmanTree;
 
-HuffmanTree initalization();  //
+HuffmanTree Initalization();  //
 
-/*
-// huffman 编码表
-typedef struct{
-    int len;
-    char * value;  // 不能用整型， 因为有以0开头；用字符串存储
-    char key;
-}DicNode,* Dictionary;
-*/
 
-//  将内存中的hftree写入文件hfmTree中
-void write_hfmtree(HuffmanTree hf){
+
+// 将内存中的hftree写入文件hfmTree中
+void WriteHfm(HuffmanTree hf){
     FILE * fp;
     fp = fopen("htmTree.dat", "w");
 
-    if(!fp==NULL){
+
         fprintf(fp, "hufman数组结构：\n权\t父\t左\t右\n");
         HuffmanTree  p =hf;
         while(p->parent!=0){
@@ -61,24 +38,21 @@ void write_hfmtree(HuffmanTree hf){
             p++;
         }
         fprintf(fp,"%d\t%d\t%d\t%d\n",p->weight,p->parent,p->lchild,p->rchild);
-    }
+
     fclose(fp);
     //if(fclose(fp)!=0)printf("Error with closing");
 }
 
-// 可以直接存入huffman中， 不必使用字符表
-// HuffmanTree * hf
-// 还应将生成的树 存储在 hfmTree文件中
-HuffmanTree initalization(){
+//-  应该边输入边初始化hf，不必使用map字符表
+HuffmanTree Initalization(){
     // 构建字符表
     unsigned int map_len;
-    printf("请输入字符集大小（任意整数，如27）:");
+    printf("请输入字符集大小（任意整数，如27）:\n");
     scanf("%d", &map_len);getchar();  // getchar()读取回车
     CharMap map = (CharMap)malloc(map_len*sizeof(CharNode));
-    printf("以 字符，权值 方式输入数据( ,1 a,2 b,3 c,4 d,5)：");
+    printf("以 字符，权值 方式输入数据( ,186 A,64 B,13 C,22 D,32 E,103 F,21 G,15 H,47 I,57 J,1 K,5 L,32 M,20 N,57 O,63 P,15 Q,1 R,48 S,51 T,80 U,23 V,8 W,18 X,1 Y,16 Z,1)：\n");
     for(int i=0;i<map_len;i++){
         scanf("%c,%d",&map[i].c, &map[i].weight);getchar();
-        //printf("%c,%d ",map[i].c, map[i].weight);
     }
 
     // 创建huffman树
@@ -98,7 +72,6 @@ HuffmanTree initalization(){
     }
 
     for(i=map_len;i<m;++i){  // 建huffman树
-
         // 取得最小的两个权值的下标
         unsigned int min[2] = {0,0}; // 存储最小的两个权值
         int flag0=1, flag1=1; // 最小值未被初始化
@@ -113,7 +86,7 @@ HuffmanTree initalization(){
                     }
                 }
                 else {
-                    if(hf[j].weight < hf[min[0]].weight)min[0] = j;
+                    if(hf[j].weight < hf[min[0]].weight){min[1] = min[0]; min[0] = j;}
                     else if (hf[j].weight < hf[min[1]].weight)min[1] = j;
                 }
             }
@@ -125,20 +98,20 @@ HuffmanTree initalization(){
         hf[i].weight = hf[min[0]].weight + hf[min[1]].weight;
     }
     free(map);
-    write_hfmtree(hf);
-    // 为什么这条语句会影响到encoding 函数的写
+    //WriteHfm(hf);
+    //? 为什么这条语句会影响到encoding 函数的写
     return hf;
 }
 
-void encoding(HuffmanTree hf){
-    //Dictionary dic = (Dictionary)malloc(hf->len*sizeof(DicNode));
+void Encoding(HuffmanTree hf){
+
     // 字符对应编码
     char * code = (char *)malloc(hf->len*sizeof(char));
     if(!code)exit(-1);
 
     for(int i=0;i<hf->len;++i){  // 从叶子节点，向上回溯
         int start = hf->len-1;
-        // ~~code字符串为什么无法更改字符~~, 不是无法更改,是前面是空白,认定为空字符串,无法输出,也无法执行其他操作
+        //? ~~code字符串为什么无法更改字符~~, 不是无法更改,是前面是空白,认定为空字符串,无法输出,也无法执行其他操作
         code[hf->len]='\0';
         int j =i;
         for(int p=hf[j].parent; p!=0;j=p,p=hf[p].parent){
@@ -150,11 +123,10 @@ void encoding(HuffmanTree hf){
         }
         hf[i].code = (char*)malloc((hf->len-start)*sizeof(char));
 
-        //strcpy(hf[i].code, code);  这样只会把空串复制过去
+        //e strcpy(hf[i].code, code);  这样只会把空串复制过去
         for(int k=0;start<hf->len;start++,k++){
             hf[i].code[k]=code[start];
         }
-        //puts(hf[i].code);
     }
     free(code);
 
@@ -175,7 +147,7 @@ void encoding(HuffmanTree hf){
     fclose(fp_r);fclose(fp_w);
 }
 
-void decoding(HuffmanTree hf){
+void Decoding(HuffmanTree hf){
     FILE * fp_r, * fp_w;
     fp_r = fopen("CodeFile.dat", "r");
     fp_w = fopen("TextFile.txt", "w");
@@ -199,13 +171,123 @@ void decoding(HuffmanTree hf){
     fputc(p.c, fp_w);
 }
 
+/**
+ * @param root 树的根节点
+ * @param hf huffman树
+ * @return 树的深度
+ */
+int maxDepth(HTNode root, HuffmanTree hf){
+    if(root.rchild==0&&root.lchild==0)
+        return 1;
+    int ldepth = maxDepth(hf[root.lchild], hf)+1;
+    int rdepth = maxDepth(hf[root.rchild], hf)+1;
+    return ldepth>rdepth?ldepth:rdepth;
+}
+/**
+ * huffman树节点表
+ * @param map  满二叉树对应的表， 空位代表不存在的节点
+ */
+void fillMap(HTNode **map, HTNode * n,int index,HuffmanTree hf){
+    int i;
+    map[index] = n;
+    if(!(n->lchild==0&&n->rchild==0)){
+        fillMap(map, &hf[n->lchild], index*2+1, hf);
+        fillMap(map, &hf[n->rchild], index*2+2, hf);
+    }
+}
+// 打印n个c
+int putchars(char c, int n){
+    int value =n;
+    while(n--)putchar(c);
+    return value;
+}
+// 打印节点
+int printNode(HTNode *n, int w){
+    int num;
+    if(n->rchild==0&&n->lchild==0){
+        return printf("%*d", w, n->weight);
+    }else{
+        num = putchars(' ', w/2-1)+putchars('-', w/2-2)+printf("%4d",n->weight)+putchars('-', w/2-2);
+        return num;
+    }
+}
+
+// 将huffman树以ascii形式打印在终端
+void TreePrint(HuffmanTree hf){
+    HTNode *root = &hf[hf->len*2-2];
+    int depth = maxDepth(*root, hf), i, j, index;
+
+    HTNode **map = (HTNode**)calloc((1<<depth)-1,sizeof(HTNode*));  // depth深度的满二叉树所有节点个数为（2的depth次方-1）
+    fillMap(map, root, 0, hf);
+    for(j=0, index=0; j<depth; j++){
+        int w =1 << (depth -j);
+        for(i=0;i<1<<j;i++,index++){
+            if(map[index]) putchars(' ', w*2-printNode(map[index], w));
+            else putchars(' ', w*2);
+        }
+        putchar('\n');
+    }
+
+    free(map);
+}
+
+void Print(){
+    FILE * f = fopen("CodeFile.dat", "r");
+    FILE * in = fopen("CodePrint.dat", "w");
+    int i = 1;
+    int ch;
+
+    // 将文件f内容输出
+    while((ch=getc(f))!= EOF){
+        putchar(ch);
+        putc(ch, in);
+        if(i%50==0){
+            putchar('\n');
+            putc('\n', in);
+        }
+        i++;
+    }
+}
+
+
+
+void interface(HuffmanTree hf){
+    char c;
+    printf("-------------操作选项-----------\n");
+    printf("I:初始化\nE:编码\nD:译码\nP:打印文件\nT:打印哈弗曼树\n");
+    printf("Q:退出程序 \n");
+    printf("--------------------------------\n");
+    while (1)
+    {
+        printf("输入字母选择要执行的操作: ");
+        scanf(" %c",&c);
+        printf("\n");
+
+        //跳出循环，退出程序
+        if(c=='Q')
+            break;
+
+        switch(c)
+        {
+            case 'I':  hf = Initalization();printf("初始化完成，请继续或退出\n");break;
+            case 'E':  Encoding(hf);printf("编码结束，编码结果存于CodeFile文件\n");break;
+            case 'D':  Decoding(hf);printf("译码结束，译码即如果存于TextFile中\n");break;
+            case 'T':  TreePrint(hf);break;
+            case 'P':  Print();printf("\n");break;
+            default:
+                printf("输入的选项错误，请重新输入\n");
+                break;
+        }
+    }
+}
+
+
+
 
 
 int main(){
-
-    HuffmanTree hf = initalization();
-    //encoding(hf);
-    //decoding(hf);
+    HuffmanTree hf;// = Initalization();
+    interface(hf);
     return 0;
 
 }
