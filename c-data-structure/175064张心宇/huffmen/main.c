@@ -169,6 +169,8 @@ void Decoding(HuffmanTree hf){
 
     }
     fputc(p.c, fp_w);
+    fclose(fp_r);fclose(fp_w);
+
 }
 
 /**
@@ -247,6 +249,8 @@ void Print(){
         }
         i++;
     }
+    fclose(f);
+    fclose(in);
 }
 
 

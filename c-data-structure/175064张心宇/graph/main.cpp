@@ -115,8 +115,6 @@ void OLGraph::DFSTreeLoop(int v, Tree<int> * t){
 
 
 void OLGraph::BFSTree(Tree<int> *&t){
-
-    // 为什么  p更新了 t却没有。
      SetUnvisit();
      Queue<Tree<int>*,MAX_VERTEX_NUM> que;
      Tree<int>* p;
@@ -132,8 +130,6 @@ void OLGraph::BFSTree(Tree<int> *&t){
                         adjmulist[w].mark=VisitIf::visited;
                         if(first){
                             p->firstchild = new Tree<int>(adjmulist[w].data, nullptr, nullptr);
-                            t;
-
                             first = false;
                             que.EnQueue(p->firstchild);
                         }else{
@@ -145,10 +141,8 @@ void OLGraph::BFSTree(Tree<int> *&t){
                     }
 
                 }
-                }
-
-
             }
+}
 
 
 void OLGraph::BFSTraverse(void (*visit)(VexBox n)) {
@@ -294,16 +288,28 @@ void interface(){
         p++;
     }
 
-    delete(raw);
+   // delete(raw);
     OLGraph map(raw, vexnum, edgenum);
     std::cout<<"深度优先遍历: ";map.DFSTraverse(OLGraph::PrintVex);
     std::cout<<"\n广度优先遍历: ";map.BFSTraverse(OLGraph::PrintVex);
+
+    std::cout<<std::endl<<"\n深度优先给生成树："<<std::endl;
+    auto t = new Tree<int>(1, nullptr, nullptr);
+    map.DFSTree(t);
+    t->dispTree();
+
+    std::cout<<std::endl<<"广度优先给生成树："<<std::endl;
+    //auto b = new Tree<int>(1, nullptr, nullptr);
+    Tree<int>* b;
+    map.BFSTree(b);
+    b->dispTree();
+
 }
 
 int main() {
 
-    test_graph();
-    //interface();
+    //test_graph();
+    interface();
 
     return 0;
 }
